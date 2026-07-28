@@ -4,9 +4,9 @@
   "description": "Midtrans Multi-Tenant Payment Bridge - Webhook Router & Admin Dashboard",
   "main": "src/server.ts",
   "scripts": {
-    "start": "tsx src/server.ts",
+    "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
-    "build": "npm run build:web",
+    "build": "npx tsc && npm run build:web",
     "build:web": "cd web && npx vite build",
     "test": "node tests/run-backend-tests.js",
     "test:unit": "node tests/run-backend-tests.js",
