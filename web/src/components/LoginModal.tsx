@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { api } from '../services/api';
 import { Shield, Lock, User, Eye, EyeOff, AlertCircle, Sparkles, X } from 'lucide-react';
 
@@ -56,7 +57,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     }
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay">
       <div className="glass-modal modal-panel max-w-md p-8 relative animate-fade-in-up border border-white/70">
         
@@ -189,6 +190,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         </p>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

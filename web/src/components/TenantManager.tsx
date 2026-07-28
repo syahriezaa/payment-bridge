@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Tenant, TenantInput } from '../types';
 import { api } from '../services/api';
 import { 
@@ -343,45 +344,59 @@ export const TenantManager: React.FC<TenantManagerProps> = ({ tenants, onRefresh
         </div>
       )}
 
-      {/* Modal Dialog for Add / Edit Tenant */}
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setIsModalOpen(false); }}>
-          <div className="glass-modal modal-panel max-w-lg p-8 relative overflow-hidden animate-fade-in-up shadow-2xl border border-white/70">
+      {/* Modal Dialog for Add / Edit Tenant — rendered via Portal to document.body */}
+      {isModalOpen && createPortal(
+        <div
+          className="modal-overlay"
+          onClick={(e) => { if (e.target === e.currentTarget) setIsModalOpen(false); }}
+        >
+          <div className="glass-modal modal-panel max-w-lg p-8 relative animate-fade-in-up">
 
-            
+            {/* Close Button */}
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100/60"
+              className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100/60 transition-colors"
+              aria-label="Close"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-xl font-extrabold text-slate-900 mb-1 flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-indigo-500/15 text-indigo-600 border border-indigo-500/20">
+            {/* Modal Header */}
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2.5 rounded-xl bg-indigo-500/12 text-indigo-600 border border-indigo-500/20 shadow-sm">
                 <Globe className="w-5 h-5" />
               </div>
-              {editingTenant ? 'Edit Target Website' : 'Add Target Website'}
-            </h3>
-            <p className="text-xs text-slate-500 mb-6 font-medium">
-              Configure merchant routing prefix and Midtrans secret keys.
-            </p>
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900">
+                  {editingTenant ? 'Edit Target Website' : 'Add Target Website'}
+                </h3>
+                <p className="text-xs text-slate-500 font-medium">
+                  Configure routing prefix and Midtrans credentials
+                </p>
+              </div>
+            </div>
 
-            {/* Error Alert Box */}
+            <div className="h-px bg-slate-200/70 mb-5 mt-4" />
+
+            {/* Error Alert */}
             {errorMsg && (
-              <div className="mb-5 p-3.5 rounded-2xl bg-rose-50/90 border border-rose-200/90 text-rose-700 text-xs font-medium flex items-start gap-2.5 shadow-sm">
+              <div className="mb-5 p-3.5 rounded-2xl bg-rose-50/90 border border-rose-200/90 text-rose-700 text-xs font-medium flex items-start gap-2.5">
                 <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
-                <div className="flex-1 font-sans">{errorMsg}</div>
+                <div className="flex-1">{errorMsg}</div>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-5">
+
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Website Name *
+                <label className="block text-xs font-bold text-slate-700 mb-2">
+                  Website Name <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
+                  autoFocus
                   placeholder="e.g. Site A Ecommerce"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -390,25 +405,27 @@ export const TenantManager: React.FC<TenantManagerProps> = ({ tenants, onRefresh
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Order ID Prefix (Uppercase) *
+                <label className="block text-xs font-bold text-slate-700 mb-2">
+                  Order ID Prefix <span className="text-rose-500">*</span>
+                  <span className="ml-1.5 text-[10px] font-normal text-slate-400">(uppercase only)</span>
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. SITEA (Matches SITEA-1001, SITEA_5541)"
+                  placeholder="e.g. SITEA"
                   value={orderPrefix}
                   onChange={(e) => setOrderPrefix(e.target.value.toUpperCase())}
-                  className="glass-input w-full font-mono text-indigo-700 font-bold"
+                  className="glass-input w-full"
+                  style={{ fontFamily: 'JetBrains Mono, monospace', color: '#4f46e5', fontWeight: 700 }}
                 />
-                <span className="text-[11px] text-slate-500 mt-1 block">
-                  Order prefixes must be unique (e.g. SITEA, SHOPB). Prefixes collide if duplicated.
-                </span>
+                <p className="text-[11px] text-slate-400 mt-1.5">
+                  Matches orders like <code className="bg-slate-100 px-1 rounded text-indigo-600">SITEA-1001</code> or <code className="bg-slate-100 px-1 rounded text-indigo-600">SITEA_5541</code>
+                </p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Target Webhook URL *
+                <label className="block text-xs font-bold text-slate-700 mb-2">
+                  Target Webhook URL <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="url"
@@ -416,13 +433,14 @@ export const TenantManager: React.FC<TenantManagerProps> = ({ tenants, onRefresh
                   placeholder="https://sitea.example.com/api/webhooks/midtrans"
                   value={targetUrl}
                   onChange={(e) => setTargetUrl(e.target.value)}
-                  className="glass-input w-full font-mono"
+                  className="glass-input w-full"
+                  style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Midtrans Server Key *
+                <label className="block text-xs font-bold text-slate-700 mb-2">
+                  Midtrans Server Key <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -430,56 +448,68 @@ export const TenantManager: React.FC<TenantManagerProps> = ({ tenants, onRefresh
                   placeholder="SB-Mid-server-xxxxxxxxxxxx"
                   value={serverKey}
                   onChange={(e) => setServerKey(e.target.value)}
-                  className="glass-input w-full font-mono"
+                  className="glass-input w-full"
+                  style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '12px' }}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-1">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Webhook Secret (Optional)
+                  <label className="block text-xs font-bold text-slate-700 mb-2">
+                    Webhook Secret
+                    <span className="ml-1 text-[10px] font-normal text-slate-400">(optional)</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="Auto-generated if blank"
+                    placeholder="Auto-generated"
                     value={webhookSecret}
                     onChange={(e) => setWebhookSecret(e.target.value)}
-                    className="glass-input w-full font-mono text-xs"
+                    className="glass-input w-full"
+                    style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11px' }}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Tenant API Key (Optional)
+                  <label className="block text-xs font-bold text-slate-700 mb-2">
+                    Tenant API Key
+                    <span className="ml-1 text-[10px] font-normal text-slate-400">(optional)</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="Auto-generated if blank"
+                    placeholder="Auto-generated"
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
-                    className="glass-input w-full font-mono text-xs"
+                    className="glass-input w-full"
+                    style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '11px' }}
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-5 border-t border-slate-200/80">
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-3 pt-2 border-t border-slate-200/70 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="glass-button-secondary px-4 py-2 text-xs"
+                  className="glass-button-secondary px-5 py-2.5 text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="glass-button-primary px-5 py-2 text-xs"
+                  className="glass-button-primary px-6 py-2.5 text-sm"
                 >
-                  {isSubmitting ? 'Saving...' : editingTenant ? 'Update Configuration' : 'Create Configuration'}
+                  {isSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                      Saving...
+                    </span>
+                  ) : editingTenant ? 'Update Website' : 'Add Website'}
                 </button>
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

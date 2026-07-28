@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { X, FileText, Server, ShieldCheck, Sparkles, Send, Layers } from 'lucide-react';
 
 interface ApiDocsModalProps {
@@ -9,7 +10,7 @@ interface ApiDocsModalProps {
 export const ApiDocsModal: React.FC<ApiDocsModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="glass-modal modal-panel max-w-3xl p-8 relative animate-fade-in-up border border-white/70 flex flex-col">
 
@@ -140,6 +141,7 @@ export const ApiDocsModal: React.FC<ApiDocsModalProps> = ({ isOpen, onClose }) =
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
