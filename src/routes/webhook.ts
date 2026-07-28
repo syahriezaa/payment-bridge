@@ -36,17 +36,21 @@ export async function webhookRoutes(fastify: FastifyInstance) {
     const tenant = resolution.tenant;
 
     if (!tenant) {
+      // Always return 200 to Midtrans — non-2xx triggers endless retries.
+      // Log as UNMAPPED so admin can see it in the Error Logs dashboard.
       const log = auditService.createLog({
         order_id: orderIdStr,
         prefix: resolution.prefix || 'UNKNOWN',
         tenant_id: null,
         status: 'UNMAPPED_PREFIX',
-        last_http_status: 404,
+        last_http_status: 200,
         payload: rawBody
       });
 
-      return reply.status(400).send({
-        error: 'Unmapped Order ID prefix',
+      return reply.status(200).send({
+        status: 'received',
+        warning: 'No tenant configured for this order_id prefix. Check your bridge dashboard.',
+        prefix: resolution.prefix || 'UNKNOWN',
         audit_id: log.id
       });
     }
@@ -61,18 +65,20 @@ export async function webhookRoutes(fastify: FastifyInstance) {
     );
 
     if (!isValidSignature) {
+      // Return 200 so Midtrans stops retrying — log as INVALID_SIGNATURE for audit.
       const log = auditService.createLog({
         order_id: orderIdStr,
         prefix: tenant.order_prefix,
         tenant_id: tenant.id,
         target_url: tenant.target_url,
         status: 'INVALID_SIGNATURE',
-        last_http_status: 401,
+        last_http_status: 200,
         payload: rawBody
       });
 
-      return reply.status(401).send({
-        error: 'Invalid Midtrans signature key',
+      return reply.status(200).send({
+        status: 'received',
+        warning: 'Signature validation failed. Verify your Midtrans Server Key in bridge dashboard.',
         audit_id: log.id
       });
     }
