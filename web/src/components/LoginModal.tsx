@@ -57,8 +57,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md transition-all">
-      <div className="glass-modal max-w-md w-full p-8 relative shadow-2xl border border-white/70 overflow-hidden">
+    <div className="modal-overlay">
+      <div className="glass-modal modal-panel max-w-md p-8 relative animate-fade-in-up border border-white/70">
         
         {/* Ambient Top Highlight Blob */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-indigo-300/40 to-sky-300/40 rounded-full blur-3xl pointer-events-none"></div>

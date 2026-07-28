@@ -345,8 +345,9 @@ export const TenantManager: React.FC<TenantManagerProps> = ({ tenants, onRefresh
 
       {/* Modal Dialog for Add / Edit Tenant */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md transition-all">
-          <div className="glass-modal max-w-lg w-full p-8 relative shadow-2xl border border-white/70 overflow-hidden">
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setIsModalOpen(false); }}>
+          <div className="glass-modal modal-panel max-w-lg p-8 relative overflow-hidden animate-fade-in-up shadow-2xl border border-white/70">
+
             
             <button
               onClick={() => setIsModalOpen(false)}

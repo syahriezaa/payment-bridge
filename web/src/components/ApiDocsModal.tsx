@@ -10,8 +10,9 @@ export const ApiDocsModal: React.FC<ApiDocsModalProps> = ({ isOpen, onClose }) =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md transition-all">
-      <div className="glass-modal max-w-3xl w-full p-8 relative shadow-2xl border border-white/70 max-h-[90vh] flex flex-col overflow-hidden">
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="glass-modal modal-panel max-w-3xl p-8 relative animate-fade-in-up border border-white/70 flex flex-col">
+
         
         <button
           onClick={onClose}

@@ -101,7 +101,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-sans antialiased text-slate-800">
+    <div className="min-h-screen flex flex-col font-sans antialiased" style={{color: '#1e293b'}}>
       
       {/* Header Bar with Apple Liquid Glass Metrics */}
       <DashboardHeader
