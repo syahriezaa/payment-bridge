@@ -80,7 +80,7 @@ export async function startServer() {
   }
 }
 
-// Auto-start if file executed directly
-if (process.argv[1] && (process.argv[1].endsWith('server.ts') || process.argv[1].endsWith('server.js'))) {
+// Auto-start if not in test environment
+if (!config.isTest) {
   startServer();
 }
