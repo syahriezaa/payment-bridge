@@ -1,9 +1,97 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { tenantDb } from '../db/index.js';
+import { tenantDb, adminUserDb } from '../db/index.js';
 import { auditService } from '../services/audit.js';
 import { retryDispatchManually } from '../services/dispatcher.js';
+import { hashPassword, verifyPassword, generateToken, verifyToken } from '../services/auth.js';
+import { config } from '../config.js';
 
 export async function adminRoutes(fastify: FastifyInstance) {
+  // --- Auth Middleware ---
+  fastify.addHook('preHandler', async (request: FastifyRequest, reply: FastifyReply) => {
+    const url = request.raw.url || request.url;
+    const pathWithoutQuery = url.split('?')[0];
+
+    if (pathWithoutQuery.startsWith('/api/admin')) {
+      if (pathWithoutQuery === '/api/admin/login' || pathWithoutQuery === '/api/admin/setup') {
+        return;
+      }
+
+      const authHeader = request.headers['authorization'];
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return reply.status(401).send({ error: 'Unauthorized' });
+      }
+
+      const token = authHeader.slice(7).trim();
+      if (!token) {
+        return reply.status(401).send({ error: 'Unauthorized' });
+      }
+
+      try {
+        const payload = verifyToken(token, config.jwtSecret);
+        (request as any).user = payload;
+      } catch {
+        return reply.status(401).send({ error: 'Unauthorized' });
+      }
+    }
+  });
+
+  // --- Auth Endpoints ---
+
+  // POST /api/admin/setup - Initial Admin Registration
+  fastify.post('/api/admin/setup', async (request: FastifyRequest, reply: FastifyReply) => {
+    const body = request.body as any;
+    if (!body || !body.username || !body.password) {
+      return reply.status(400).send({ error: 'Username and password are required' });
+    }
+
+    if (adminUserDb.count() > 0) {
+      return reply.status(400).send({ error: 'Admin setup already completed' });
+    }
+
+    const { hash, salt } = hashPassword(body.password);
+    const user = adminUserDb.create({
+      username: body.username,
+      password_hash: hash,
+      salt
+    });
+
+    const token = generateToken({ id: user.id, username: user.username }, config.jwtSecret);
+    return reply.status(200).send({
+      token,
+      user: {
+        id: user.id,
+        username: user.username
+      }
+    });
+  });
+
+  // POST /api/admin/login - Admin Login
+  fastify.post('/api/admin/login', async (request: FastifyRequest, reply: FastifyReply) => {
+    const body = request.body as any;
+    if (!body || !body.username || !body.password) {
+      return reply.status(400).send({ error: 'Username and password are required' });
+    }
+
+    const user = adminUserDb.findByUsername(body.username);
+    if (!user) {
+      return reply.status(401).send({ error: 'Invalid credentials' });
+    }
+
+    const isValid = verifyPassword(body.password, user.password_hash, user.salt);
+    if (!isValid) {
+      return reply.status(401).send({ error: 'Invalid credentials' });
+    }
+
+    const token = generateToken({ id: user.id, username: user.username }, config.jwtSecret);
+    return reply.status(200).send({
+      token,
+      user: {
+        id: user.id,
+        username: user.username
+      }
+    });
+  });
+
   // --- Tenants Management ---
 
   // POST /api/admin/tenants - Create Tenant

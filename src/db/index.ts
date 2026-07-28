@@ -2,7 +2,7 @@ import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
 import { config } from '../config.js';
-import { Tenant, TenantInput, WebhookAuditLog, CreateAuditLogInput } from './types.js';
+import { Tenant, TenantInput, WebhookAuditLog, CreateAuditLogInput, AdminUser } from './types.js';
 
 let dbInstance: Database.Database | null = null;
 
@@ -60,10 +60,20 @@ export function initTables(db: Database.Database): void {
       FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE SET NULL
     );
 
+    CREATE TABLE IF NOT EXISTS admin_users (
+      id TEXT PRIMARY KEY,
+      username TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      salt TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
     CREATE INDEX IF NOT EXISTS idx_tenants_prefix ON tenants(order_prefix);
     CREATE INDEX IF NOT EXISTS idx_tenants_api_key ON tenants(api_key);
     CREATE INDEX IF NOT EXISTS idx_audit_logs_tenant ON webhook_audit_logs(tenant_id);
     CREATE INDEX IF NOT EXISTS idx_audit_logs_status ON webhook_audit_logs(status);
+    CREATE INDEX IF NOT EXISTS idx_admin_users_username ON admin_users(username);
   `);
 }
 
@@ -191,8 +201,50 @@ export const tenantDb = {
     const db = getDb();
     db.prepare('DELETE FROM webhook_audit_logs').run();
     db.prepare('DELETE FROM tenants').run();
+    db.prepare('DELETE FROM admin_users').run();
   }
 };
+
+export class AdminUserDb {
+  create(input: { username: string; password_hash: string; salt: string; id?: string }): AdminUser {
+    const db = getDb();
+    const id = input.id || `admin-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+    const now = new Date().toISOString();
+
+    const stmt = db.prepare(`
+      INSERT INTO admin_users (id, username, password_hash, salt, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `);
+
+    stmt.run(id, input.username, input.password_hash, input.salt, now, now);
+    return this.findById(id)!;
+  }
+
+  findByUsername(username: string): AdminUser | null {
+    const db = getDb();
+    const row = db.prepare('SELECT * FROM admin_users WHERE username = ?').get(username);
+    return row ? (row as AdminUser) : null;
+  }
+
+  findById(id: string): AdminUser | null {
+    const db = getDb();
+    const row = db.prepare('SELECT * FROM admin_users WHERE id = ?').get(id);
+    return row ? (row as AdminUser) : null;
+  }
+
+  count(): number {
+    const db = getDb();
+    const row = db.prepare('SELECT COUNT(*) as count FROM admin_users').get() as { count: number };
+    return row ? row.count : 0;
+  }
+
+  clearAll(): void {
+    const db = getDb();
+    db.prepare('DELETE FROM admin_users').run();
+  }
+}
+
+export const adminUserDb = new AdminUserDb();
 
 // Audit Log DAO functions
 export const auditDb = {

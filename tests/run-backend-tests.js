@@ -6,6 +6,7 @@ const testFiles = [
   'tests/unit/signature.test.ts',
   'tests/unit/router.test.ts',
   'tests/unit/dispatcher.test.ts',
+  'tests/unit/auth.test.ts',
   'tests/integration/webhook.test.ts',
   'tests/integration/admin.test.ts',
   'tests/integration/snap.test.ts'

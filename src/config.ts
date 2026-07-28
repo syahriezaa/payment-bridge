@@ -9,6 +9,7 @@ export const config = {
   databasePath: process.env.DATABASE_PATH || path.join(process.cwd(), 'bridge.db'),
   midtransSnapUrl: process.env.MIDTRANS_SNAP_URL || 'https://app.sandbox.midtrans.com/snap/v1/transactions',
   nodeEnv: process.env.NODE_ENV || 'development',
+  jwtSecret: process.env.JWT_SECRET || 'midtrans-bridge-jwt-secret-key-2026',
   get isTest(): boolean {
     return process.env.NODE_ENV === 'test';
   }

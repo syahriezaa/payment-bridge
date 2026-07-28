@@ -39,3 +39,45 @@ Integrity mode: development
 
 ### System Verification & Tests
 - [ ] Includes automated test suite or mock script verifying signature validation, prefix parsing, and dispatch retries.
+
+## Follow-up — 2026-07-28T19:24:29Z
+
+Upgrade the Midtrans Multi-Tenant Payment Bridge in d:\bridge to include Secure Admin Authentication (Login & Session JWT Protection) and a stunning Apple-style Light Liquid Glassmorphism UI Theme, then push to GitHub and deploy to payment.junaidi-ai.com.
+
+Working directory: d:\bridge
+Integrity mode: development
+
+## Requirements
+
+### R1. Admin Authentication & Database Security
+- Add an Admin User table in SQLite with hashed passwords (`bcrypt` / `argon2` or secure HMAC-SHA256 salt).
+- Implement `POST /api/admin/login` and `POST /api/admin/setup` endpoints returning JWT session tokens.
+- Protect all Admin API endpoints (`/api/admin/*` except login/setup) with JWT Bearer token authentication middleware.
+- Store initial admin credentials safely and persist session state across server restarts.
+
+### R2. Apple-Style Light Liquid Glass UI Theme
+- Redesign the Web Admin Dashboard (`web/`) with a light mode **Apple Liquid Glassmorphism** design system:
+  - Translucent frosted glass containers (`backdrop-blur-xl bg-white/70 border border-white/40 shadow-xl shadow-slate-200/50`).
+  - Vibrant Apple-inspired liquid gradients (soft sky blue, indigo, emerald highlights on crisp white canvas).
+  - Modern typography, smooth micro-interactions, Apple-like rounded cards (`rounded-3xl`), pill badges, and clean modal dialogs.
+  - Full support for Login / Logout workflow with persistent auth token storage.
+
+### R3. E2E Verification, Build & Remote VPS Deployment
+- Update automated backend & E2E tests to verify admin login, unauthorized API blocking (401), and authenticated admin actions.
+- Build production frontend bundle, commit and push changes to GitHub `https://github.com/syahriezaa/payment-bridge.git`.
+- Deploy updated build seamlessly to VPS `root@31.97.111.84` (`payment.junaidi-ai.com`) using PM2 without disrupting existing services.
+
+## Acceptance Criteria
+
+### Security & Authentication
+- [ ] Unauthenticated requests to `/api/admin/tenants` or `/api/admin/audit-logs` return `401 Unauthorized`.
+- [ ] Admin login returns a valid JWT session token; logging out clears the local session.
+- [ ] Passwords are non-reversibly hashed in SQLite database.
+
+### UI & Aesthetics
+- [ ] Dashboard presents a premium Apple Light Liquid Glass UI with frosted glass effects and responsive mobile layout.
+- [ ] Unauthenticated users see a sleek Liquid Glass Login Modal.
+
+### Testing & Deployment
+- [ ] All automated unit, integration, and E2E tests pass 100%.
+- [ ] Successfully deployed and live on `https://payment.junaidi-ai.com`.

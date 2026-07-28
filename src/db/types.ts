@@ -10,6 +10,15 @@ export interface Tenant {
   created_at: string;
 }
 
+export interface AdminUser {
+  id: string;
+  username: string;
+  password_hash: string;
+  salt: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface TenantInput {
   id?: string;
   name: string;

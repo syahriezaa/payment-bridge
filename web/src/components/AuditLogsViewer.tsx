@@ -7,16 +7,13 @@ import {
   CheckCircle2, 
   XCircle, 
   Clock, 
-  AlertTriangle, 
   Search, 
-  Filter, 
   Eye, 
   Copy, 
   Check, 
   X, 
   RefreshCw,
-  Terminal,
-  Zap
+  Terminal
 } from 'lucide-react';
 
 interface AuditLogsViewerProps {
@@ -106,31 +103,31 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
     switch (status) {
       case 'SUCCESS':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            SUCCESS
+          <span className="glass-pill-badge bg-emerald-500/15 text-emerald-700 border border-emerald-500/30">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>SUCCESS</span>
           </span>
         );
       case 'FAILED':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
-            <XCircle className="w-3.5 h-3.5" />
-            FAILED
+          <span className="glass-pill-badge bg-rose-500/15 text-rose-700 border border-rose-500/30">
+            <XCircle className="w-3.5 h-3.5 text-rose-600" />
+            <span>FAILED</span>
           </span>
         );
       case 'RETRYING':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse">
-            <RotateCw className="w-3.5 h-3.5 animate-spin" />
-            RETRYING
+          <span className="glass-pill-badge bg-amber-500/15 text-amber-700 border border-amber-500/30 animate-pulse">
+            <RotateCw className="w-3.5 h-3.5 text-amber-600 animate-spin" />
+            <span>RETRYING</span>
           </span>
         );
       case 'PENDING':
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
-            <Clock className="w-3.5 h-3.5" />
-            PENDING
+          <span className="glass-pill-badge bg-amber-500/15 text-amber-700 border border-amber-500/30">
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
+            <span>PENDING</span>
           </span>
         );
     }
@@ -141,30 +138,37 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
     : logs;
 
   return (
-    <div className="bg-slate-900 rounded-xl border border-slate-800 shadow-xl overflow-hidden mb-8">
-      {/* Header Bar */}
-      <div className="p-5 border-b border-slate-800 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-slate-900/60">
+    <div className="glass-container p-6 mb-8 relative overflow-hidden">
+      
+      {/* Background Soft Glow */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-sky-200/30 via-indigo-200/20 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+      {/* Header Bar & Filters */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 border-b border-slate-200/80 mb-6">
         <div>
-          <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-indigo-400" />
+          <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-indigo-500/15 text-indigo-600 border border-indigo-500/20 shadow-sm">
+              <FileText className="w-5 h-5" />
+            </div>
             Real-Time Webhook Audit Logs
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Track incoming Midtrans notifications, delivery HTTP statuses, execution latencies, and trigger manual re-sends.
+          <p className="text-xs text-slate-500 mt-1 font-medium">
+            Translucent liquid glass log viewer with real-time status indicators and manual re-send actions.
           </p>
         </div>
 
         {/* Filter Controls */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
+          
           {/* Order ID Search */}
           <div className="relative">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3" />
             <input
               type="text"
               placeholder="Search Order ID..."
               value={searchOrderId}
               onChange={(e) => setSearchOrderId(e.target.value)}
-              className="pl-8 pr-3 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="glass-input text-xs pl-9 py-2 max-w-[170px]"
             />
           </div>
 
@@ -172,7 +176,7 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
           <select
             value={selectedStatus}
             onChange={(e) => { setSelectedStatus(e.target.value); setPage(1); }}
-            className="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-300 focus:outline-none focus:border-indigo-500"
+            className="glass-input text-xs py-2"
           >
             <option value="">All Statuses</option>
             <option value="SUCCESS">SUCCESS</option>
@@ -185,7 +189,7 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
           <select
             value={selectedTenant}
             onChange={(e) => { setSelectedTenant(e.target.value); setPage(1); }}
-            className="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-300 focus:outline-none focus:border-indigo-500 max-w-[160px]"
+            className="glass-input text-xs py-2 max-w-[160px]"
           >
             <option value="">All Tenants</option>
             {tenants.map(t => (
@@ -197,7 +201,7 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
           <button
             onClick={fetchLogs}
             disabled={isLoading}
-            className="p-1.5 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors"
+            className="glass-button-secondary p-2 text-slate-600"
             title="Refresh Audit Logs"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
@@ -205,89 +209,91 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
         </div>
       </div>
 
-      {/* Logs Table */}
-      <div className="overflow-x-auto">
+      {/* Translucent Glass Table */}
+      <div className="overflow-x-auto rounded-2xl border border-white/80 bg-white/60 backdrop-blur-md shadow-sm">
         {filteredLogs.length === 0 ? (
-          <div className="py-12 text-center">
-            <Terminal className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-            <p className="text-slate-300 font-medium">No webhook audit logs found</p>
-            <p className="text-xs text-slate-500 mt-1">Audit logs will appear here in real-time when Midtrans sends webhooks.</p>
+          <div className="py-16 text-center p-8">
+            <div className="w-14 h-14 rounded-3xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto mb-3 border border-indigo-500/20">
+              <Terminal className="w-7 h-7" />
+            </div>
+            <p className="text-slate-800 font-bold text-base">No webhook audit logs found</p>
+            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+              Audit log entries will populate here in real-time when Midtrans sends webhooks.
+            </p>
           </div>
         ) : (
-          <table className="w-full text-left text-sm text-slate-300">
-            <thead className="bg-slate-950/80 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+          <table className="w-full text-left text-sm text-slate-700">
+            <thead className="bg-slate-100/80 text-[11px] uppercase font-bold text-slate-500 border-b border-slate-200/80">
               <tr>
                 <th className="px-5 py-3.5">Order ID</th>
-                <th className="px-5 py-3.5">Tenant Target</th>
+                <th className="px-5 py-3.5">Target Website</th>
                 <th className="px-5 py-3.5">Dispatch Status</th>
-                <th className="px-5 py-3.5">HTTP Status</th>
+                <th className="px-5 py-3.5">HTTP Code</th>
                 <th className="px-5 py-3.5">Latency</th>
                 <th className="px-5 py-3.5">Attempts</th>
                 <th className="px-5 py-3.5">Timestamp</th>
-                <th className="px-5 py-3.5 text-right">Action</th>
+                <th className="px-5 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 font-mono text-xs">
+            <tbody className="divide-y divide-slate-200/60 font-mono text-xs">
               {filteredLogs.map((log) => {
                 const httpCode = log.response_code ?? log.response_status ?? log.http_status;
-                const tenantName = log.tenant_name || tenants.find(t => t.id === log.tenant_id)?.name || 'Unknown / Unmapped';
+                const tenantName = log.tenant_name || tenants.find(t => t.id === log.tenant_id)?.name || 'Unmapped Target';
                 const tenantPrefix = log.tenant_prefix || tenants.find(t => t.id === log.tenant_id)?.order_prefix;
                 const formattedTime = new Date(log.timestamp || log.created_at || Date.now()).toLocaleString();
 
                 return (
-                  <tr key={log.id} className="hover:bg-slate-800/40 transition-colors">
-                    <td className="px-5 py-3.5 font-bold text-slate-100">
+                  <tr key={log.id} className="hover:bg-white/90 transition-colors">
+                    <td className="px-5 py-4 font-extrabold text-slate-900">
                       {log.order_id}
                     </td>
-                    <td className="px-5 py-3.5 font-sans">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-slate-200 font-semibold">{tenantName}</span>
+                    <td className="px-5 py-4 font-sans">
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-800 font-bold">{tenantName}</span>
                         {tenantPrefix && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-800 text-indigo-400 border border-slate-700">
+                          <span className="glass-pill-badge bg-indigo-500/10 text-indigo-700 border border-indigo-500/20 text-[10px] py-0.5 px-2">
                             {tenantPrefix}
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 font-sans">
+                    <td className="px-5 py-4 font-sans">
                       {getStatusBadge(log.status)}
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="px-5 py-4 font-bold">
                       {httpCode ? (
-                        <span className={`font-bold ${httpCode >= 200 && httpCode < 300 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        <span className={httpCode >= 200 && httpCode < 300 ? 'text-emerald-600' : 'text-rose-600'}>
                           {httpCode}
                         </span>
                       ) : (
-                        <span className="text-slate-500">—</span>
+                        <span className="text-slate-400">—</span>
                       )}
                     </td>
-                    <td className="px-5 py-3.5 text-slate-300">
+                    <td className="px-5 py-4 text-slate-600">
                       {log.latency_ms !== null && log.latency_ms !== undefined ? `${log.latency_ms} ms` : '—'}
                     </td>
-                    <td className="px-5 py-3.5 text-slate-400">
-                      <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-semibold text-slate-300">
+                    <td className="px-5 py-4 text-slate-600">
+                      <span className="px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 font-bold text-[11px] text-slate-700">
                         {log.attempts || 1} / 5
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 text-slate-400 font-sans text-[11px]">
+                    <td className="px-5 py-4 text-slate-500 font-sans text-[11px]">
                       {formattedTime}
                     </td>
-                    <td className="px-5 py-3.5 text-right font-sans space-x-2">
-                      {/* Detail View Button */}
+                    <td className="px-5 py-4 text-right font-sans space-x-2">
                       <button
                         onClick={() => setSelectedLog(log)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-md transition-colors"
+                        className="glass-button-secondary px-3 py-1 text-xs inline-flex items-center gap-1"
                         title="View Full Payload & Details"
                       >
-                        <Eye className="w-3.5 h-3.5 text-indigo-400" />
+                        <Eye className="w-3.5 h-3.5 text-indigo-600" />
                         <span>Inspect</span>
                       </button>
 
-                      {/* Manual Retry Button */}
                       <button
                         onClick={(e) => handleManualRetry(log.id, e)}
                         disabled={retryingId === log.id}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 rounded-md transition-colors disabled:opacity-50"
+                        className="glass-button-secondary px-3 py-1 text-xs text-amber-700 hover:bg-amber-50 border-amber-200 inline-flex items-center gap-1 disabled:opacity-50"
                         title="Trigger Manual Webhook Re-send"
                       >
                         <RotateCw className={`w-3.5 h-3.5 ${retryingId === log.id ? 'animate-spin' : ''}`} />
@@ -303,7 +309,7 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
       </div>
 
       {/* Pagination Bar */}
-      <div className="p-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between text-xs text-slate-400">
+      <div className="pt-4 mt-4 flex items-center justify-between text-xs text-slate-500 font-medium">
         <div>
           Showing {filteredLogs.length} of {total} total webhook logs
         </div>
@@ -311,79 +317,80 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded disabled:opacity-40"
+            className="glass-button-secondary px-3 py-1 text-xs disabled:opacity-40"
           >
             Previous
           </button>
-          <span>Page {page}</span>
+          <span className="px-2 font-bold text-slate-700">Page {page}</span>
           <button
             onClick={() => setPage(p => p + 1)}
             disabled={logs.length < limit}
-            className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded disabled:opacity-40"
+            className="glass-button-secondary px-3 py-1 text-xs disabled:opacity-40"
           >
             Next
           </button>
         </div>
       </div>
 
-      {/* Audit Log Inspect Modal */}
+      {/* Audit Log Inspector Modal */}
       {selectedLog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl max-w-2xl w-full p-6 relative max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md transition-all">
+          <div className="glass-modal max-w-2xl w-full p-8 relative shadow-2xl border border-white/70 max-h-[90vh] flex flex-col">
+            
             <button
               onClick={() => setSelectedLog(null)}
-              className="absolute top-4 right-4 p-1 text-slate-400 hover:text-white"
+              className="absolute top-5 right-5 p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100/60"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="mb-4">
+            <div className="mb-5">
               <div className="flex items-center gap-3">
-                <h3 className="text-lg font-bold text-slate-100 font-mono">
+                <h3 className="text-xl font-extrabold text-slate-900 font-mono tracking-tight">
                   Order ID: {selectedLog.order_id}
                 </h3>
                 {getStatusBadge(selectedLog.status)}
               </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Log ID: <span className="font-mono text-slate-300">{selectedLog.id}</span>
+              <p className="text-xs text-slate-500 mt-1">
+                Log ID: <span className="font-mono text-slate-700 font-bold">{selectedLog.id}</span>
               </p>
             </div>
 
             {/* Notification Alert for Manual Retry */}
             {retryResult && (
-              <div className={`mb-4 p-3 rounded-lg text-xs flex items-center justify-between ${
+              <div className={`mb-4 p-3 rounded-2xl text-xs font-medium flex items-center justify-between ${
                 retryResult.success 
-                  ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300' 
-                  : 'bg-rose-500/10 border border-rose-500/30 text-rose-300'
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' 
+                  : 'bg-rose-50 text-rose-800 border border-rose-200'
               }`}>
                 <span>{retryResult.msg}</span>
-                <button onClick={() => setRetryResult(null)} className="text-slate-400 hover:text-white">
-                  <X className="w-3.5 h-3.5" />
+                <button onClick={() => setRetryResult(null)} className="text-slate-400 hover:text-slate-700">
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             )}
 
             {/* Log Details Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 bg-slate-950/70 rounded-lg border border-slate-800 text-xs mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-100/80 backdrop-blur-sm rounded-2xl border border-slate-200/80 text-xs mb-5">
               <div>
-                <span className="text-slate-500 block">HTTP Response:</span>
-                <span className="font-mono font-bold text-slate-200">
+                <span className="text-slate-500 font-medium block">HTTP Code:</span>
+                <span className="font-mono font-bold text-slate-900 text-sm">
                   {selectedLog.response_code ?? selectedLog.response_status ?? selectedLog.http_status ?? 'N/A'}
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 block">Latency:</span>
-                <span className="font-mono text-slate-200">
+                <span className="text-slate-500 font-medium block">Latency:</span>
+                <span className="font-mono text-slate-900 text-sm font-semibold">
                   {selectedLog.latency_ms !== null ? `${selectedLog.latency_ms} ms` : 'N/A'}
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 block">Attempts:</span>
-                <span className="font-mono text-slate-200">{selectedLog.attempts || 1} / 5</span>
+                <span className="text-slate-500 font-medium block">Attempts:</span>
+                <span className="font-mono text-slate-900 text-sm font-semibold">{selectedLog.attempts || 1} / 5</span>
               </div>
               <div>
-                <span className="text-slate-500 block">Timestamp:</span>
-                <span className="font-sans text-[11px] text-slate-300">
+                <span className="text-slate-500 font-medium block">Timestamp:</span>
+                <span className="font-sans text-[11px] text-slate-700 font-semibold">
                   {new Date(selectedLog.timestamp || selectedLog.created_at || Date.now()).toLocaleTimeString()}
                 </span>
               </div>
@@ -391,30 +398,30 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
 
             {/* Error Message Section */}
             {selectedLog.error_message && (
-              <div className="mb-4 p-3 bg-rose-950/40 border border-rose-900/60 rounded-lg text-xs text-rose-300">
-                <span className="font-bold text-rose-400 block mb-1">Dispatch Error:</span>
+              <div className="mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl text-xs text-rose-800">
+                <span className="font-bold block mb-1">Dispatch Error Detail:</span>
                 <p className="font-mono text-[11px] break-all">{selectedLog.error_message}</p>
               </div>
             )}
 
-            {/* Payload JSON Previewer Header */}
+            {/* Payload JSON Header */}
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                <Terminal className="w-4 h-4 text-indigo-400" />
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <Terminal className="w-4 h-4 text-indigo-600" />
                 Incoming Midtrans Webhook Payload (JSON)
               </span>
               <button
                 onClick={copyPayloadJson}
-                className="inline-flex items-center space-x-1 px-2.5 py-1 text-[11px] font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded transition-colors"
+                className="glass-button-secondary px-3 py-1 text-xs inline-flex items-center gap-1"
               >
-                {copiedPayload ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+                {copiedPayload ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
                 <span>{copiedPayload ? 'Copied' : 'Copy JSON'}</span>
               </button>
             </div>
 
-            {/* Payload JSON Tree / Code Box */}
-            <div className="flex-1 overflow-y-auto bg-slate-950 p-4 rounded-lg border border-slate-800 font-mono text-xs text-indigo-200">
-              <pre className="whitespace-pre-wrap break-all text-[11px]">
+            {/* Payload JSON Code View */}
+            <div className="flex-1 overflow-y-auto bg-slate-900 p-4 rounded-2xl border border-slate-800 font-mono text-xs text-indigo-300 shadow-inner">
+              <pre className="whitespace-pre-wrap break-all text-[11px] leading-relaxed">
                 {typeof selectedLog.payload === 'string'
                   ? selectedLog.payload
                   : JSON.stringify(selectedLog.payload, null, 2)}
@@ -422,25 +429,27 @@ export const AuditLogsViewer: React.FC<AuditLogsViewerProps> = ({ tenants, onLog
             </div>
 
             {/* Modal Footer Actions */}
-            <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-800">
+            <div className="flex items-center justify-between pt-5 mt-5 border-t border-slate-200/80">
               <button
                 onClick={() => setSelectedLog(null)}
-                className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+                className="glass-button-secondary px-4 py-2 text-xs"
               >
-                Close
+                Close Inspector
               </button>
               <button
                 onClick={() => handleManualRetry(selectedLog.id)}
                 disabled={retryingId === selectedLog.id}
-                className="inline-flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-white bg-amber-600 hover:bg-amber-500 rounded-lg shadow-md shadow-amber-600/20 transition-all disabled:opacity-50"
+                className="glass-button-primary px-5 py-2 text-xs inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-amber-500/25"
               >
                 <RotateCw className={`w-4 h-4 ${retryingId === selectedLog.id ? 'animate-spin' : ''}`} />
                 <span>{retryingId === selectedLog.id ? 'Retrying...' : 'Re-send Webhook Now'}</span>
               </button>
             </div>
+
           </div>
         </div>
       )}
+
     </div>
   );
 };
