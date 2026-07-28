@@ -1,0 +1,53 @@
+{
+  "name": "midtrans-multi-tenant-bridge",
+  "version": "1.0.0",
+  "description": "Midtrans Multi-Tenant Payment Bridge - Webhook Router & Admin Dashboard",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "dev": "tsx watch src/server.ts",
+    "build": "npm run build:web",
+    "build:web": "cd web && npx vite build",
+    "test": "node tests/run-backend-tests.js",
+    "test:unit": "node tests/run-backend-tests.js",
+    "test:e2e": "node tests/run-e2e.js",
+    "test:all": "node tests/run-backend-tests.js && node tests/run-e2e.js"
+  },
+  "keywords": [
+    "midtrans",
+    "payment",
+    "webhook",
+    "multi-tenant",
+    "e2e-testing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "@fastify/static": "^10.1.2",
+    "better-sqlite3": "^13.0.2",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.10.0",
+    "lucide-react": "^0.469.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.1",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  }
+}

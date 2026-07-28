@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+web/node_modules/
+
+# Production builds
+dist/
+web/dist/
+
+# Environment files
+.env
+.env.local
+
+# Databases & SQLite
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# Logs
+*.log
+npm-debug.log*
+
+# System & IDE files
+.DS_Store
+.vscode/
+.idea/
+.agents/
