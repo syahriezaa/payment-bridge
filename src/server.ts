@@ -82,5 +82,8 @@ export async function startServer() {
 
 // Auto-start if not in test environment
 if (!config.isTest) {
-  startServer();
+  await startServer().catch((err) => {
+    console.error('[Bridge Server] Fatal error on startup:', err);
+    process.exit(1);
+  });
 }
